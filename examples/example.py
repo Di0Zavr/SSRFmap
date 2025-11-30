@@ -20,12 +20,27 @@ def ssrf():
     content = command(f"curl {data.get('url')}")
     return content
 
+@app.route("/ssrfClear", methods=['POST'])
+def ssrfClear():
+    data = request.values
+    url = data.get("url")
+    if not url:
+        return "go away"
+    
+    protocol = url.split(":")[0]
+    if protocol != "http" and protocol != "https":
+        return "go away"
+
+    ip_address = url.split(":")[0].split("/")[-1]
+    if ip_address == "127.0.0.1" or ip_address == "localhost":
+        return "go away"
+    content = command(f"curl {data.get('url')}")
+    return content
+
 # curl -i -H "Content-Type: application/json" -X POST -d '{"url": "http://example.com"}' http://localhost:5000/ssrf2
 @app.route("/ssrf2", methods=['POST'])
 def ssrf2():
     data = request.json
-    print(data)
-    print(data.get('url'))
     content = command(f"curl {data.get('url')}")
     return content
 
