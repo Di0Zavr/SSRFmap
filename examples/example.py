@@ -27,11 +27,16 @@ def ssrfClear():
     if not url:
         return "go away"
     
-    protocol = url.split(":")[0]
+    protocol = url.split("://")[0]
     if protocol != "http" and protocol != "https":
         return "go away"
 
-    ip_address = url.split(":")[0].split("/")[-1]
+    try:
+        ip_address, port = url.split("://")[1].split("/")[0].split(":")
+    except ValueError:
+        # means no port specified
+        ip_address, port = url.split("://")[1].split("/")[0]
+    
     if ip_address == "127.0.0.1" or ip_address == "localhost":
         return "go away"
     content = command(f"curl {data.get('url')}")
